@@ -1,35 +1,35 @@
 'use strict';
 
 var ADVERT_TITLES = [
-  "Большая уютная квартира",
-  "Маленькая неуютная квартира",
-  "Огромный прекрасный дворец",
-  "Маленький ужасный дворец",
-  "Красивый гостевой домик",
-  "Некрасивый негостеприимный домик",
-  "Уютное бунгало далеко от моря",
-  "Неуютное бунгало по колено в воде"
+  'Большая уютная квартира',
+  'Маленькая неуютная квартира',
+  'Огромный прекрасный дворец',
+  'Маленький ужасный дворец',
+  'Красивый гостевой домик',
+  'Некрасивый негостеприимный домик',
+  'Уютное бунгало далеко от моря',
+  'Неуютное бунгало по колено в воде'
 ];
 
 var ADVERT_TYPE = [
-  "flat",
-  "house",
-  "bungalo"
+  'flat',
+  'house',
+  'bungalo'
 ];
 
 var ADVERT_CHECKIN_OR_CHECKOUT = [
-  "12:00",
-  "13:00",
-  "14:00"
+  '12:00',
+  '13:00',
+  '14:00'
 ];
 
 var ADVERT_FEATURES = [
-  "wifi",
-  "dishwasher",
-  "parking",
-  "washer",
-  "elevator",
-  "conditioner"
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner'
 ];
 
 var generateIntegerNumber = function (minNumber, maxNumber) {
@@ -38,8 +38,17 @@ var generateIntegerNumber = function (minNumber, maxNumber) {
   return number;
 };
 
+var mixRandomLengthArray = function (array, arrayLength) {
+  var mixedArray = array.sort(function () {
+    return 0.5 - Math.random();
+  });
+
+  return mixedArray.slice(0, generateIntegerNumber(1, arrayLength));
+};
+
 var generateAdverts = function (amount) {
   var advertsList = [];
+  var advertFeatures = ADVERT_FEATURES.slice();
   var advertFeaturesLength = ADVERT_FEATURES.length;
 
   for (var i = 0; i < amount; i++) {
@@ -57,7 +66,7 @@ var generateAdverts = function (amount) {
         'guests': generateIntegerNumber(1, 5),
         'checkin': ADVERT_CHECKIN_OR_CHECKOUT[generateIntegerNumber(0, 2)],
         'checkout': ADVERT_CHECKIN_OR_CHECKOUT[generateIntegerNumber(0, 2)],
-        'features': ADVERT_FEATURES.slice(0, generateIntegerNumber(0, advertFeaturesLength)),
+        'features': mixRandomLengthArray(advertFeatures, advertFeaturesLength),
         'description': '',
         'photos': []
       },
@@ -75,3 +84,4 @@ var generateAdverts = function (amount) {
 };
 
 var adverts = generateAdverts(8);
+
