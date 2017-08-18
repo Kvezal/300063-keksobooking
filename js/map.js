@@ -32,6 +32,9 @@ var ADVERT_FEATURES = [
   'conditioner'
 ];
 
+var PIN_WIDTH = 40;
+var PIN_HEIGHT = 40;
+
 var generateIntegerNumber = function (minNumber, maxNumber) {
   var number = Math.floor((maxNumber - minNumber + 1) * Math.random()) + minNumber;
 
@@ -51,15 +54,19 @@ var generateAdverts = function (amount) {
   var advertFeatures = ADVERT_FEATURES.slice();
   var advertFeaturesLength = ADVERT_FEATURES.length;
 
+  var minLocationPositionX = 300 + PIN_WIDTH / 2;
+  var maxLocationPositionX = 900 + PIN_WIDTH / 2;
+  var minLocationPositionY = 100 + PIN_HEIGHT;
+  var maxLocationPositionY = 500 + PIN_HEIGHT;
+
   for (var i = 0; i < amount; i++) {
     var advert = {
       'author': {
-        'avatar': 'img/avatars/user{{0' + i + '}}.png'
+        'avatar': 'img/avatars/user0' + (i + 1) + '.png'
       },
 
       'offer': {
         'title': ADVERT_TITLES[i],
-        'address': '{{' + location.x + '}}, {{' + location.y + '}}',
         'price': generateIntegerNumber(1000, 1000000),
         'type': ADVERT_TYPE[generateIntegerNumber(0, 2)],
         'rooms': generateIntegerNumber(1, 5),
@@ -72,10 +79,12 @@ var generateAdverts = function (amount) {
       },
 
       'location': {
-        'x': generateIntegerNumber(300, 900),
-        'y': generateIntegerNumber(100, 500)
+        'x': generateIntegerNumber(minLocationPositionX, maxLocationPositionX),
+        'y': generateIntegerNumber(minLocationPositionY, maxLocationPositionY)
       }
     };
+
+    advert.offer.address = advert.location.x + ', ' + advert.location.y;
 
     advertsList[i] = advert;
   }
@@ -83,5 +92,64 @@ var generateAdverts = function (amount) {
   return advertsList;
 };
 
-var adverts = generateAdverts(8);
+var createPinsMap = function (adverts, width, height) {
+  var blockPinsMap = document.createDocumentFragment();
 
+  adverts.forEach(function (advert) {
+    var pinMap = document.createElement('div');
+    pinMap.className = 'pin';
+    pinMap.style.left = advert.location.x - width / 2 + 'px';
+    pinMap.style.top = advert.location.y - height + 'px';
+
+    var pinMapImage = document.createElement('img');
+    pinMapImage.src = advert.author.avatar + '';
+    pinMapImage.className = 'rounded';
+    pinMapImage.width = width;
+    pinMapImage.height = height;
+
+    pinMap.appendChild(pinMapImage);
+
+    blockPinsMap.appendChild(pinMap);
+  });
+
+  return blockPinsMap;
+};
+
+var createNewDialogPanel = function (template, advert) {
+  var information = advert.offer;
+
+  var avatar = dialogTitle.querySelector('img');
+  avatar.src = advert.author.avatar;
+
+  template.querySelector('.lodge__title').textContent = information.title;
+  template.querySelector('.lodge__address').textContent = information.address;
+  template.querySelector('.lodge__price').textContent = information.price + '₽/ночь';
+    template.querySelector('.lodge__type').textContent = information.type;
+  template.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + information.guests + ' гостей в ' + information.rooms + ' комнатах';
+  template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
+    template.querySelector('.lodge__features').textContent = '';
+  template.querySelector('.lodge__description').textContent = information.description;
+
+  return template;
+};
+
+// функция сортировки задана временно, для отображения разных аватарок
+// в элементе dialog__title
+var adverts = generateAdverts(8).sort(function () {
+  return 0.5 - Math.random();
+});
+
+var fragmentPinsMap = createPinsMap(adverts, PIN_WIDTH, PIN_HEIGHT);
+
+var tokioPinMap = document.querySelector('.tokyo__pin-map');
+tokioPinMap.appendChild(fragmentPinsMap);
+
+
+var dialog = document.querySelector('.dialog');
+var dialogTitle = dialog.querySelector('.dialog__title');
+var dialogPanel = dialog.querySelector('.dialog__panel');
+
+var lodgeTemplate = document.querySelector('#lodge-template').content;
+var dialogPanelTemplate = lodgeTemplate.querySelector('.dialog__panel');
+var newDialogPanel = createNewDialogPanel(dialogPanelTemplate, adverts[0]);
+dialog.replaceChild(newDialogPanel, dialogPanel);
