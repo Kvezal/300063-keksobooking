@@ -10,19 +10,16 @@ var ADVERT_TITLES = [
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'
 ];
-
 var ADVERT_TYPE = [
   'flat',
   'house',
   'bungalo'
 ];
-
 var ADVERT_CHECKIN_OR_CHECKOUT = [
   '12:00',
   '13:00',
   '14:00'
 ];
-
 var ADVERT_FEATURES = [
   'wifi',
   'dishwasher',
@@ -36,9 +33,7 @@ var PIN_WIDTH = 40;
 var PIN_HEIGHT = 40;
 
 var generateIntegerNumber = function (minNumber, maxNumber) {
-  var number = Math.floor((maxNumber - minNumber + 1) * Math.random()) + minNumber;
-
-  return number;
+  return Math.floor((maxNumber - minNumber + 1) * Math.random()) + minNumber;
 };
 
 var mixRandomLengthArray = function (array, arrayLength) {
@@ -47,6 +42,29 @@ var mixRandomLengthArray = function (array, arrayLength) {
   });
 
   return mixedArray.slice(0, generateIntegerNumber(1, arrayLength));
+};
+
+var getTypeHouse = function (type) {
+  if (type === 'flat') {
+    return 'Квартира';
+  } else if (type === 'house') {
+    return 'Дом';
+  }
+
+  return 'Бунгало';
+};
+
+var getfeaturesFragment = function (features) {
+  var featuresFragment = document.createDocumentFragment();
+
+  features.forEach(function (item) {
+    var span = document.createElement('span');
+    span.className = 'feature__image feature__image--' + item;
+
+    featuresFragment.appendChild(span);
+  });
+
+  return featuresFragment;
 };
 
 var generateAdverts = function (amount) {
@@ -124,11 +142,13 @@ var createNewDialogPanel = function (template, advert) {
   template.querySelector('.lodge__title').textContent = information.title;
   template.querySelector('.lodge__address').textContent = information.address;
   template.querySelector('.lodge__price').textContent = information.price + '₽/ночь';
-    template.querySelector('.lodge__type').textContent = information.type;
+  template.querySelector('.lodge__type').textContent = getTypeHouse(information.type);
   template.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + information.guests + ' гостей в ' + information.rooms + ' комнатах';
   template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
-    template.querySelector('.lodge__features').textContent = '';
   template.querySelector('.lodge__description').textContent = information.description;
+
+  var featuresFragment = getfeaturesFragment(information.features);
+  template.querySelector('.lodge__features').appendChild(featuresFragment);
 
   return template;
 };
@@ -144,7 +164,6 @@ var fragmentPinsMap = createPinsMap(adverts, PIN_WIDTH, PIN_HEIGHT);
 var tokioPinMap = document.querySelector('.tokyo__pin-map');
 tokioPinMap.appendChild(fragmentPinsMap);
 
-
 var dialog = document.querySelector('.dialog');
 var dialogTitle = dialog.querySelector('.dialog__title');
 var dialogPanel = dialog.querySelector('.dialog__panel');
@@ -152,4 +171,5 @@ var dialogPanel = dialog.querySelector('.dialog__panel');
 var lodgeTemplate = document.querySelector('#lodge-template').content;
 var dialogPanelTemplate = lodgeTemplate.querySelector('.dialog__panel');
 var newDialogPanel = createNewDialogPanel(dialogPanelTemplate, adverts[0]);
+
 dialog.replaceChild(newDialogPanel, dialogPanel);
