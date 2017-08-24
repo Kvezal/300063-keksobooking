@@ -1,5 +1,8 @@
 'use strict';
 
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+
 var ADVERT_TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -54,7 +57,7 @@ var getTypeHouse = function (type) {
   return 'Бунгало';
 };
 
-var getfeaturesFragment = function (features) {
+var getFeaturesFragment = function (features) {
   var featuresFragment = document.createDocumentFragment();
 
   features.forEach(function (item) {
@@ -113,9 +116,15 @@ var generateAdverts = function (amount) {
 var createPinsMap = function (adverts, width, height) {
   var blockPinsMap = document.createDocumentFragment();
 
-  adverts.forEach(function (advert) {
+  adverts.forEach(function (advert, index) {
     var pinMap = document.createElement('div');
-    pinMap.className = 'pin';
+
+    pinMap.classList.add('pin');
+
+    if (index === 0) {
+      pinMap.classList.add('pin--active');
+    }
+
     pinMap.style.left = advert.location.x - width / 2 + 'px';
     pinMap.style.top = advert.location.y - height + 'px';
 
@@ -124,6 +133,7 @@ var createPinsMap = function (adverts, width, height) {
     pinMapImage.className = 'rounded';
     pinMapImage.width = width;
     pinMapImage.height = height;
+    pinMapImage.tabIndex = '0';
 
     pinMap.appendChild(pinMapImage);
 
@@ -147,10 +157,75 @@ var createNewDialogPanel = function (template, advert) {
   template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
   template.querySelector('.lodge__description').textContent = information.description;
 
-  var featuresFragment = getfeaturesFragment(information.features);
-  template.querySelector('.lodge__features').appendChild(featuresFragment);
+  var featuresFragment = getFeaturesFragment(information.features);
+  var lodgeFeatures = document.createElement('div');
+  lodgeFeatures.classList.add('lodge__features');
+  lodgeFeatures.appendChild(featuresFragment);
+
+  template.replaceChild(lodgeFeatures, template.querySelector('.lodge__features'));
 
   return template;
+};
+
+var deletePinActive = function () {
+  if (document.querySelector('.pin--active')) {
+    document.querySelector('.pin--active').classList.remove('pin--active');
+  }
+};
+
+var showDialog = function (element) {
+  var imgSrc = element.src;
+  var imgAddress = imgSrc.slice(imgSrc.indexOf('img'));
+
+  for (var i = 0, advertsLength = adverts.length; i < advertsLength; i++) {
+    if (adverts[i].author.avatar === imgAddress) {
+      var advertIndex = i;
+      break;
+    }
+  }
+
+  createNewDialogPanel(dialogPanelTemplate, adverts[advertIndex]);
+};
+
+var cityPinMapClickHandler = function (evt) {
+  activateDialog(evt);
+};
+
+var cityPinMapEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activateDialog(evt);
+  }
+};
+
+var closeDialog = function () {
+  dialog.classList.add('hidden');
+
+  deletePinActive();
+
+  document.removeEventListener('keydown', popupEscPressHandler);
+};
+
+var openDialog = function () {
+  dialog.classList.remove('hidden');
+
+  document.addEventListener('keydown', popupEscPressHandler);
+};
+
+var activateDialog = function (evt) {
+  var target = evt.target;
+
+  if (target.tagName === 'IMG' && !target.parentNode.classList.contains('pin__main')) {
+    deletePinActive();
+    target.parentNode.classList.add('pin--active');
+    showDialog(target);
+    openDialog();
+  }
+};
+
+var popupEscPressHandler = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeDialog();
+  }
 };
 
 // функция сортировки задана временно, для отображения разных аватарок
@@ -161,8 +236,11 @@ var adverts = generateAdverts(8).sort(function () {
 
 var fragmentPinsMap = createPinsMap(adverts, PIN_WIDTH, PIN_HEIGHT);
 
-var tokioPinMap = document.querySelector('.tokyo__pin-map');
-tokioPinMap.appendChild(fragmentPinsMap);
+var cityMap = document.querySelector('.tokyo__pin-map');
+cityMap.appendChild(fragmentPinsMap);
+
+cityMap.addEventListener('click', cityPinMapClickHandler);
+cityMap.addEventListener('keydown', cityPinMapEnterPressHandler);
 
 var dialog = document.querySelector('.dialog');
 var dialogTitle = dialog.querySelector('.dialog__title');
@@ -173,3 +251,11 @@ var dialogPanelTemplate = lodgeTemplate.querySelector('.dialog__panel');
 var newDialogPanel = createNewDialogPanel(dialogPanelTemplate, adverts[0]);
 
 dialog.replaceChild(newDialogPanel, dialogPanel);
+
+var dialogClose = dialog.querySelector('.dialog__close');
+
+dialogClose.addEventListener('click', function () {
+  closeDialog();
+});
+
+document.addEventListener('keydown', popupEscPressHandler);
