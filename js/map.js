@@ -116,14 +116,10 @@ var generateAdverts = function (amount) {
 var createPinsMap = function (adverts, width, height) {
   var blockPinsMap = document.createDocumentFragment();
 
-  adverts.forEach(function (advert, index) {
+  adverts.forEach(function (advert) {
     var pinMap = document.createElement('div');
 
     pinMap.classList.add('pin');
-
-    if (index === 0) {
-      pinMap.classList.add('pin--active');
-    }
 
     pinMap.style.left = advert.location.x - width / 2 + 'px';
     pinMap.style.top = advert.location.y - height + 'px';
@@ -168,8 +164,9 @@ var createNewDialogPanel = function (template, advert) {
 };
 
 var deletePinActive = function () {
-  if (document.querySelector('.pin--active')) {
-    document.querySelector('.pin--active').classList.remove('pin--active');
+  var pinActive = document.querySelector('.pin--active');
+  if (pinActive) {
+    pinActive.classList.remove('pin--active');
   }
 };
 
@@ -177,14 +174,11 @@ var showDialog = function (element) {
   var imgSrc = element.src;
   var imgAddress = imgSrc.slice(imgSrc.indexOf('img'));
 
-  for (var i = 0, advertsLength = adverts.length; i < advertsLength; i++) {
-    if (adverts[i].author.avatar === imgAddress) {
-      var advertIndex = i;
-      break;
+  adverts.some(function (advert) {
+    if (advert.author.avatar === imgAddress) {
+      createNewDialogPanel(dialogPanelTemplate, advert);
     }
-  }
-
-  createNewDialogPanel(dialogPanelTemplate, adverts[advertIndex]);
+  });
 };
 
 var cityPinMapClickHandler = function (evt) {
