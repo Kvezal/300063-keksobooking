@@ -181,16 +181,6 @@ var showDialog = function (element) {
   });
 };
 
-var cityPinMapClickHandler = function (evt) {
-  activateDialog(evt);
-};
-
-var cityPinMapEnterPressHandler = function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    activateDialog(evt);
-  }
-};
-
 var closeDialog = function () {
   dialog.classList.add('hidden');
 
@@ -214,6 +204,20 @@ var activateDialog = function (evt) {
     showDialog(target);
     openDialog();
   }
+};
+
+var cityPinMapClickHandler = function (evt) {
+  activateDialog(evt);
+};
+
+var cityPinMapEnterPressHandler = function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activateDialog(evt);
+  }
+};
+
+var dialogCloseClickHandler = function () {
+  closeDialog();
 };
 
 var popupEscPressHandler = function (evt) {
@@ -248,8 +252,6 @@ dialog.replaceChild(newDialogPanel, dialogPanel);
 
 var dialogClose = dialog.querySelector('.dialog__close');
 
-dialogClose.addEventListener('click', function () {
-  closeDialog();
-});
+dialogClose.addEventListener('click', dialogCloseClickHandler);
 
 document.addEventListener('keydown', popupEscPressHandler);
