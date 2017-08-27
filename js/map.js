@@ -279,7 +279,7 @@ var changeFieldCapacity = function (field, value) {
   var options = field.querySelectorAll('option');
   value = +value;
 
-  options.forEach(function (item, index) {
+  [].forEach.call(options, (function (item, index) {
     item.disabled = true;
 
     if (value === 100) {
@@ -293,7 +293,7 @@ var changeFieldCapacity = function (field, value) {
       item.disabled = false;
       item.selected = true;
     }
-  });
+  }));
 };
 
 var resetForm = function (form) {
