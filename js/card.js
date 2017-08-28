@@ -49,23 +49,26 @@
     return template;
   };
 
-  var showDialog = function (element) {
-    var imgSrc = element.src;
-    var imgAddress = imgSrc.slice(imgSrc.indexOf('img'));
+  var closeDialog = function () {
+    window.card.dialog.classList.add('hidden');
 
-    window.data.adverts.some(function (advert) {
-      if (advert.author.avatar === imgAddress) {
-        window.card.createNewDialogPanel(window.card.dialogPanelTemplate, advert);
-      }
-    });
+    window.pin.deletePinActive();
+
+    document.removeEventListener('keydown', popupEscPressHandler);
+  };
+
+  var openDialog = function () {
+    window.card.dialog.classList.remove('hidden');
+
+    document.addEventListener('keydown', popupEscPressHandler);
+  };
+
+  var popupEscPressHandler = function (evt) {
+    window.utils.isEscEvent(evt, window.card.closeDialog);
   };
 
   var dialogCloseClickHandler = function () {
     window.card.closeDialog();
-  };
-
-  var popupEscPressHandler = function (evt) {
-    window.utils.isEscEvent(evt, window.card.closeDialog());
   };
 
   var dialog = document.querySelector('.dialog');
@@ -86,30 +89,7 @@
     dialog: dialog,
     createNewDialogPanel: createNewDialogPanel,
     dialogPanelTemplate: dialogPanelTemplate,
-
-    closeDialog: function () {
-      dialog.classList.add('hidden');
-
-      window.pin.deletePinActive();
-
-      document.removeEventListener('keydown', popupEscPressHandler);
-    },
-
-    openDialog: function () {
-      window.card.dialog.classList.remove('hidden');
-
-      document.addEventListener('keydown', popupEscPressHandler);
-    },
-
-    activateDialog: function (evt) {
-      var target = evt.target;
-
-      if (target.tagName === 'IMG' && !target.parentNode.classList.contains('pin__main')) {
-        window.pin.deletePinActive();
-        target.parentNode.classList.add('pin--active');
-        showDialog(target);
-        window.card.openDialog();
-      }
-    }
+    closeDialog: closeDialog,
+    openDialog: openDialog
   };
 })();
