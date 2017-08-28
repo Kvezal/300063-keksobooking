@@ -272,6 +272,7 @@ var changeFieldPrice = function (field, value) {
     minPrice = 10000;
   }
 
+  field.min = minPrice;
   field.value = minPrice;
 };
 
@@ -320,6 +321,10 @@ var timeinChangeHandler = function (evt) {
   changeFieldValue(timeout, evt.currentTarget.value);
 };
 
+var timeoutChangeHandler = function (evt) {
+  changeFieldValue(timein, evt.currentTarget.value);
+};
+
 var typeChangeHandler = function (evt) {
   var currentValue = evt.currentTarget.value;
 
@@ -356,6 +361,8 @@ var roomNumber = noticeForm.querySelector('#room_number');
 var capacity = noticeForm.querySelector('#capacity');
 
 timein.addEventListener('change', timeinChangeHandler);
+timeout.addEventListener('change', timeoutChangeHandler);
+
 type.addEventListener('change', typeChangeHandler);
 roomNumber.addEventListener('change', roomNumberChangeHandler);
 
