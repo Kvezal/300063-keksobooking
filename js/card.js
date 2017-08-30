@@ -1,14 +1,10 @@
 'use strict';
 
 (function () {
-  var getTypeHouse = function (type) {
-    if (type === 'flat') {
-      return 'Квартира';
-    } else if (type === 'house') {
-      return 'Дом';
-    }
-
-    return 'Бунгало';
+  var typeHouse = {
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало'
   };
 
   var getFeaturesFragment = function (features) {
@@ -33,7 +29,7 @@
     template.querySelector('.lodge__title').textContent = information.title;
     template.querySelector('.lodge__address').textContent = information.address;
     template.querySelector('.lodge__price').textContent = information.price + '₽/ночь';
-    template.querySelector('.lodge__type').textContent = getTypeHouse(information.type);
+    template.querySelector('.lodge__type').textContent = typeHouse[information.type];
     template.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + information.guests + ' гостей в ' + information.rooms + ' комнатах';
     template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
     template.querySelector('.lodge__description').textContent = information.description;
