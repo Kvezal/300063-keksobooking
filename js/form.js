@@ -1,43 +1,65 @@
 'use strict';
 (function () {
-  var changeFieldValue = function (field, value) {
-    field.value = value;
+  var ADVERT_TYPE = [
+    'flat',
+    'house',
+    'bungalo',
+    'palace'
+  ];
+  var ADVERT_CHECKIN_OR_CHECKOUT = [
+    '12:00',
+    '13:00',
+    '14:00'
+  ];
+  var ADVERT_MIN_PRICE = [
+    '1000',
+    '5000',
+    '0',
+    '10000'
+  ];
+  var ROOMS_NUMBERS = [
+    '100',
+    '1',
+    '2',
+    '3'
+  ];
+  var CAPACITY_LIST = [
+    [0],
+    [1],
+    [1, 2],
+    [1, 2, 3]
+  ];
+
+  var syncValues = function (element, value) {
+    element.value = value;
   };
 
-  var changeFieldPrice = function (field, value) {
-    var minPrice = 0;
+  var syncValueWithMin = function (element, value) {
+    element.min = value;
 
-    if (value === 'flat') {
-      minPrice = 1000;
-    } else if (value === 'house') {
-      minPrice = 5000;
-    } else if (value === 'palace') {
-      minPrice = 10000;
-    }
-
-    field.min = minPrice;
-    field.value = minPrice;
+    syncValues(element, value);
   };
 
-  var changeFieldCapacity = function (field, value) {
-    var options = field.querySelectorAll('option');
-    value = +value;
+  var syncValueWithOptions = function (element, list) {
+    var elementOptions = [].slice.apply(element.querySelectorAll('option'));
+    var listLength = list.length;
 
-    [].forEach.call(options, (function (item, index) {
-      item.disabled = true;
-
-      if (value === 100) {
-        if (index !== 0) {
-          return;
-        }
-
+    elementOptions.forEach(function (item, index) {
+      if (list[0] === 0 && index === 0) {
         item.disabled = false;
         item.selected = true;
-      } else if (index !== 0 && index <= value) {
-        item.disabled = false;
-        item.selected = true;
+        listLength = 0;
+        return;
       }
-    }));
+
+      if (index > 0 && index <= listLength) {
+        item.disabled = false;
+        item.selected = true;
+        return;
+      }
+
+      item.disabled = true;
+    });
   };
 
   var resetForm = function (form) {
@@ -61,23 +83,19 @@
   };
 
   var timeinChangeHandler = function (evt) {
-    changeFieldValue(timeout, evt.currentTarget.value);
+    window.synchronizeFields(evt.target, timeout, ADVERT_CHECKIN_OR_CHECKOUT, ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
   };
 
   var timeoutChangeHandler = function (evt) {
-    changeFieldValue(timein, evt.currentTarget.value);
+    window.synchronizeFields(evt.target, timein, ADVERT_CHECKIN_OR_CHECKOUT, ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
   };
 
   var typeChangeHandler = function (evt) {
-    var currentValue = evt.currentTarget.value;
-
-    changeFieldPrice(price, currentValue);
+    window.synchronizeFields(evt.target, price, ADVERT_TYPE, ADVERT_MIN_PRICE, syncValueWithMin);
   };
 
   var roomNumberChangeHandler = function (evt) {
-    var currentRoomNumber = evt.currentTarget.value;
-
-    changeFieldCapacity(capacity, currentRoomNumber);
+    window.synchronizeFields(evt.target, capacity, ROOMS_NUMBERS, CAPACITY_LIST, syncValueWithOptions);
   };
 
   var noticeFormSubmitHandler = function () {
