@@ -59,6 +59,8 @@
 
   var pinCurrentUserMouseDownHandler = function (evt) {
     evt.preventDefault();
+    var pinWrapper = evt.target.parentElement;
+    pinWrapper.style.zIndex = 1;
 
     var startCoords = {
       x: evt.clientX,
@@ -89,6 +91,7 @@
 
     var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
+      pinWrapper.style.zIndex = '';
 
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
