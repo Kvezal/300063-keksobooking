@@ -10,24 +10,13 @@
     activateDialog(evt);
   };
 
-  var showDialog = function (element) {
-    var imgSrc = element.src;
-    var imgAddress = imgSrc.slice(imgSrc.indexOf('img'));
-
-    window.data.adverts.some(function (advert) {
-      if (advert.author.avatar === imgAddress) {
-        window.card.createNewDialogPanel(window.card.dialogPanelTemplate, advert);
-      }
-    });
-  };
-
   var activateDialog = function (evt) {
     var target = evt.target;
 
     if (target.tagName === 'IMG' && !target.parentNode.classList.contains('pin__main')) {
       window.pin.deletePinActive();
       target.parentNode.classList.add('pin--active');
-      showDialog(target);
+      window.showCard(target);
       window.card.openDialog();
     }
   };
@@ -63,13 +52,15 @@
   };
 
   var cityPinMapEnterPressHandler = function (evt) {
-    if (evt.keyCode === 13) {
+    if (evt.keyCode === window.utils.ENTER_KEYCODE) {
       activateDialog(evt);
     }
   };
 
   var pinCurrentUserMouseDownHandler = function (evt) {
     evt.preventDefault();
+    var pinWrapper = evt.target.parentElement;
+    pinWrapper.style.zIndex = 1;
 
     var startCoords = {
       x: evt.clientX,
@@ -100,6 +91,7 @@
 
     var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
+      pinWrapper.style.zIndex = '';
 
       document.removeEventListener('mousemove', mouseMoveHandler);
       document.removeEventListener('mouseup', mouseUpHandler);
