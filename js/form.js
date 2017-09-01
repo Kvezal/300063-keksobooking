@@ -62,9 +62,9 @@
     });
   };
 
-  var resetForm = function (form) {
+  var resetForm = function () {
     setTimeout(function () {
-      form.reset();
+      noticeForm.reset();
     }, 100);
   };
 
@@ -98,8 +98,9 @@
     window.synchronizeFields(evt.target, capacity, ROOMS_NUMBERS, CAPACITY_LIST, syncValueWithOptions);
   };
 
-  var noticeFormSubmitHandler = function () {
-    resetForm(noticeForm);
+  var noticeFormSubmitHandler = function (evt) {
+    window.backend.save(new FormData(noticeForm), resetForm, window.backend.displayError);
+    evt.preventDefault();
   };
 
   var formSubmitClickHandler = function () {
