@@ -1,39 +1,42 @@
 'use strict';
 
 (function () {
-  var PIN_WIDTH = 40;
-  var PIN_HEIGHT = 40;
-
-  var createPinsMap = function (adverts, width, height) {
-    var blockPinsMap = document.createDocumentFragment();
-
-    adverts.forEach(function (advert) {
-      var pinMap = document.createElement('div');
-
-      pinMap.classList.add('pin');
-
-      pinMap.style.left = advert.location.x - width / 2 + 'px';
-      pinMap.style.top = advert.location.y - height + 'px';
-
-      var pinMapImage = document.createElement('img');
-      pinMapImage.src = advert.author.avatar + '';
-      pinMapImage.className = 'rounded';
-      pinMapImage.width = width;
-      pinMapImage.height = height;
-      pinMapImage.tabIndex = '0';
-
-      pinMap.appendChild(pinMapImage);
-
-      blockPinsMap.appendChild(pinMap);
-    });
-
-    return blockPinsMap;
+  var PIN_PARAMETERS = {
+    width: 56,
+    height: 75,
+    imageWidth: 40,
+    imageHeight: 40
   };
 
-  var fragmentPinsMap = createPinsMap(window.data.adverts, PIN_WIDTH, PIN_HEIGHT);
-
   window.pin = {
-    fragmentPinsMap: fragmentPinsMap,
+    PIN_PARAMETERS: PIN_PARAMETERS,
+
+    createPinsMap: function (adverts) {
+      var blockPinsMap = document.createDocumentFragment();
+
+      adverts.forEach(function (advert) {
+        var pinMap = document.createElement('div');
+
+        pinMap.classList.add('pin');
+
+        pinMap.style.left = advert.location.x - PIN_PARAMETERS.width / 2 + 'px';
+        pinMap.style.top = advert.location.y - PIN_PARAMETERS.height + 'px';
+
+        var pinMapImage = document.createElement('img');
+        pinMapImage.src = advert.author.avatar + '';
+        pinMapImage.className = 'rounded';
+        pinMapImage.width = PIN_PARAMETERS.imageWidth;
+        pinMapImage.height = PIN_PARAMETERS.imageHeight;
+        pinMapImage.tabIndex = '0';
+
+        pinMap.appendChild(pinMapImage);
+
+        blockPinsMap.appendChild(pinMap);
+      });
+
+      return blockPinsMap;
+    },
+
     deletePinActive: function () {
       var pinActive = document.querySelector('.pin--active');
       if (pinActive) {
