@@ -6,18 +6,14 @@
     height: 94
   };
 
-  var cityPinMapClickHandler = function (evt) {
-    activateDialog(evt);
-  };
-
-  var activateDialog = function (evt) {
+  var activateDialog = function (evt, data) {
     var target = evt.target;
 
     if (target.tagName === 'IMG' && !target.parentNode.classList.contains('pin__main')) {
       window.pin.deletePinActive();
       target.parentNode.classList.add('pin--active');
-      window.showCard(target);
-      window.card.openDialog();
+      window.showCard(target, data);
+      window.card.openDialog(data);
     }
   };
 
@@ -49,12 +45,6 @@
 
   var setFieldAddress = function (elem) {
     address.value = (elem.offsetLeft + Math.floor(PIN_MAIN.width / 2)) + ', ' + (elem.offsetTop + PIN_MAIN.height);
-  };
-
-  var cityPinMapEnterPressHandler = function (evt) {
-    if (evt.keyCode === window.utils.ENTER_KEYCODE) {
-      activateDialog(evt);
-    }
   };
 
   var pinCurrentUserMouseDownHandler = function (evt) {
@@ -114,16 +104,33 @@
   };
 
   var cityMap = document.querySelector('.tokyo__pin-map');
-  cityMap.appendChild(window.pin.fragmentPinsMap);
 
-  cityMap.addEventListener('click', cityPinMapClickHandler);
-  cityMap.addEventListener('keydown', cityPinMapEnterPressHandler);
+  var showPins = function (adverts) {
+    cityMap.appendChild(window.pin.createPinsMap(adverts));
+  };
+
+  var loadPinsAndCards = function (data) {
+    var cityPinMapClickHandler = function (evt) {
+      activateDialog(evt, data);
+    };
+
+    var cityPinMapEnterPressHandler = function (evt) {
+      if (evt.keyCode === window.utils.ENTER_KEYCODE) {
+        activateDialog(evt, data);
+      }
+    };
+    showPins(data);
+
+    cityMap.addEventListener('click', cityPinMapClickHandler);
+    cityMap.addEventListener('keydown', cityPinMapEnterPressHandler);
+  };
+
+  window.backend.load(loadPinsAndCards, window.backend.displayError);
 
   var pinCurrentUser = cityMap.querySelector('.pin__main');
   pinCurrentUser.addEventListener('mousedown', pinCurrentUserMouseDownHandler);
 
   var address = document.querySelector('#address');
   address.addEventListener('change', addressChangeHandler);
-  setFieldAddress(pinCurrentUser);
 })();
 
