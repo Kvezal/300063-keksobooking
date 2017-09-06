@@ -11,10 +11,10 @@
   window.pin = {
     PIN_PARAMETERS: PIN_PARAMETERS,
 
-    createPinsMap: function (adverts) {
+    createPinsMap: function (adverts, amount) {
       var blockPinsMap = document.createDocumentFragment();
 
-      adverts.forEach(function (advert) {
+      adverts.slice(0, amount).forEach(function (advert) {
         var pinMap = document.createElement('div');
 
         pinMap.classList.add('pin');

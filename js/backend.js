@@ -68,7 +68,7 @@
       };
 
       var closeButtonKeydownHandler = function (evt) {
-        if (evt.keyCode === 13) {
+        if (evt.keyCode === window.utils.ENTER_KEYCODE) {
           document.body.removeChild(errorDiv);
 
           closeButton.removeEventListener('keydown', closeButtonClickHandler);

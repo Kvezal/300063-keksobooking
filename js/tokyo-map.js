@@ -105,11 +105,13 @@
 
   var cityMap = document.querySelector('.tokyo__pin-map');
 
-  var showPins = function (adverts) {
-    cityMap.appendChild(window.pin.createPinsMap(adverts));
+  var showPins = function (adverts, amount) {
+    cityMap.appendChild(window.pin.createPinsMap(adverts, amount));
   };
 
   var loadPinsAndCards = function (data) {
+    window.tokyoMap.adverts = data;
+
     var cityPinMapClickHandler = function (evt) {
       activateDialog(evt, data);
     };
@@ -119,7 +121,7 @@
         activateDialog(evt, data);
       }
     };
-    showPins(data);
+    showPins(data, 3);
 
     cityMap.addEventListener('click', cityPinMapClickHandler);
     cityMap.addEventListener('keydown', cityPinMapEnterPressHandler);
@@ -132,5 +134,31 @@
 
   var address = document.querySelector('#address');
   address.addEventListener('change', addressChangeHandler);
+
+  var reRenderingPins = function () {
+    window.card.closeDialog();
+    window.pin.deletePinActive();
+
+    while (cityMap.children.length !== 1) {
+      cityMap.removeChild(cityMap.children[1]);
+    }
+
+    showPins(window.filters());
+  };
+
+  var filterChangeHandler = function (evt) {
+    if (!evt.target.classList.contains('tokyo__filter') && evt.target.name !== 'feature') {
+      return;
+    }
+
+    window.debounce(reRenderingPins);
+  };
+
+  var tokyoFiltersForm = document.querySelector('.tokyo__filters');
+  tokyoFiltersForm.addEventListener('change', filterChangeHandler);
+
+  window.tokyoMap = {
+    adverts: []
+  };
 })();
 
