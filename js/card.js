@@ -20,6 +20,27 @@
     return featuresFragment;
   };
 
+  var getPhotosFragment = function (photos) {
+    var photosFragment = document.createDocumentFragment();
+
+    photos.forEach(function (item) {
+      var img = document.createElement('img');
+      img.width = 52;
+      img.height = 42;
+      img.src = item;
+
+      photosFragment.appendChild(img);
+    });
+
+    return photosFragment;
+  };
+
+  var clearList = function (list) {
+    while (list.firstChild) {
+      list.removeChild(list.firstChild);
+    }
+  };
+
   var closeDialog = function () {
     dialog.classList.add('hidden');
 
@@ -64,13 +85,20 @@
       template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
       template.querySelector('.lodge__description').textContent = information.description;
 
+      debugger;
       var featuresFragment = getFeaturesFragment(information.features);
+      var lodgeFeatures = template.querySelector('.lodge__features');
 
-      var lodgeFeatures = document.createElement('div');
-      lodgeFeatures.classList.add('lodge__features');
+      clearList(lodgeFeatures);
+
       lodgeFeatures.appendChild(featuresFragment);
 
-      template.replaceChild(lodgeFeatures, template.querySelector('.lodge__features'));
+      var photosFragment = getPhotosFragment(information.photos);
+      var lodgePhotos = template.querySelector('.lodge__photos');
+
+      clearList(lodgePhotos);
+
+      lodgePhotos.appendChild(photosFragment);
 
       return template;
     },
