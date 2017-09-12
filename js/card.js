@@ -85,7 +85,6 @@
       template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
       template.querySelector('.lodge__description').textContent = information.description;
 
-      debugger;
       var featuresFragment = getFeaturesFragment(information.features);
       var lodgeFeatures = template.querySelector('.lodge__features');
 
