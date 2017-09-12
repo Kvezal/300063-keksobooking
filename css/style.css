@@ -186,6 +186,8 @@ select option:hover {
 
 .upload input {
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 2;
     opacity: 0;
     width:100%;
@@ -411,11 +413,16 @@ select option:hover {
     height: 70px;
     min-width: 70px;
     max-width: 70px;
+    overflow: hidden;
 
     border-radius: 4px;
     border: 4px transparent;
 
     background: #dadad4;
+}
+
+.form__photo img {
+  width: 100%;
 }
 
 .form__submit {
