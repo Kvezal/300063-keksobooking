@@ -30,6 +30,9 @@
     [1, 2, 3]
   ];
 
+  var USER_AVATAR_DEFAULT = 'img/muffin.png';
+  var MAIN_PIN_IMAGE = 'img/main-pin-image.png';
+
   var syncValues = function (element, value) {
     element.value = value;
   };
@@ -62,9 +65,28 @@
     });
   };
 
+  var resetFormPhotos = function () {
+    var formPhotos = document.querySelectorAll('.form__photo');
+
+    Array.prototype.forEach.call(formPhotos, function (item) {
+      if (item.firstChild) {
+        item.removeChild(item.firstChild);
+      }
+    });
+
+    window.photosOfHouse = [];
+
+    var userAvatar = document.querySelector('img[alt="User Avatar"]');
+    userAvatar.src = USER_AVATAR_DEFAULT;
+
+    var mainPin = document.querySelector('img[alt="Main Pin"]');
+    mainPin.src = MAIN_PIN_IMAGE;
+  };
+
   var resetForm = function () {
     setTimeout(function () {
       noticeForm.reset();
+      resetFormPhotos();
     }, 100);
   };
 
