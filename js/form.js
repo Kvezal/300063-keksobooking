@@ -30,6 +30,9 @@
     [1, 2, 3]
   ];
 
+  var USER_AVATAR_DEFAULT = 'img/muffin.png';
+  var MAIN_PIN_IMAGE = 'img/main-pin-image.png';
+
   var syncValues = function (element, value) {
     element.value = value;
   };
@@ -74,10 +77,10 @@
     window.photosOfHouse = [];
 
     var userAvatar = document.querySelector('img[alt="User Avatar"]');
-    userAvatar.src = 'img/muffin.png';
+    userAvatar.src = USER_AVATAR_DEFAULT;
 
     var mainPin = document.querySelector('img[alt="Main Pin"]');
-    mainPin.src = 'img/main-pin-image.png';
+    mainPin.src = MAIN_PIN_IMAGE;
   };
 
   var resetForm = function () {
