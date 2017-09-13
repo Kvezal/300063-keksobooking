@@ -65,11 +65,11 @@
   var resetFormPhotos = function () {
     var formPhotos = document.querySelectorAll('.form__photo');
 
-    for (var i = formPhotos.length - 1; i >= 0; i--) {
-      if (formPhotos[i].firstChild) {
-        formPhotos[i].removeChild(formPhotos[i].firstChild);
+    Array.prototype.forEach.call(formPhotos, function (item) {
+      if (item.firstChild) {
+        item.removeChild(item.firstChild);
       }
-    }
+    });
 
     window.photosOfHouse = [];
 
