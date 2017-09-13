@@ -17,7 +17,13 @@
     return true;
   };
 
-  var func = function (reader) {
+  var addPhotos = function (reader) {
+    window.photosOfHouse.push(fileChooser.files[0]);
+
+    window.photosOfHouse.forEach(function (item, index) {
+      fileChooser.files[index] = item;
+    });
+
     for (var i = 0, formPhotosLength = formPhotos.length; i < formPhotosLength; i++) {
       if (!formPhotos[i].firstChild) {
         var img = document.createElement('img');
@@ -34,7 +40,7 @@
     }
   };
 
-  window.unloadPhoto(fileChooser, func);
+  window.unloadPhoto(fileChooser, addPhotos);
 
   var draggedItem;
 
@@ -98,4 +104,6 @@
     target.style.outline = '';
     evt.preventDefault();
   });
+
+  window.photosOfHouse = [];
 })();

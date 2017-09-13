@@ -62,9 +62,28 @@
     });
   };
 
+  var resetFormPhotos = function () {
+    var formPhotos = document.querySelectorAll('.form__photo');
+
+    for (var i = formPhotos.length - 1; i >= 0; i--) {
+      if (formPhotos[i].firstChild) {
+        formPhotos[i].removeChild(formPhotos[i].firstChild);
+      }
+    }
+
+    window.photosOfHouse = [];
+
+    var userAvatar = document.querySelector('img[alt="User Avatar"]');
+    userAvatar.src = 'img/muffin.png';
+
+    var mainPin = document.querySelector('img[alt="Main Pin"]');
+    mainPin.src = 'img/main-pin-image.png';
+  };
+
   var resetForm = function () {
     setTimeout(function () {
       noticeForm.reset();
+      resetFormPhotos();
     }, 100);
   };
 
