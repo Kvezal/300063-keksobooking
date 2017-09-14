@@ -1,14 +1,14 @@
 'use strict';
 
 (function () {
-  var url = 'https://1510.dump.academy/keksobooking';
+  var URL = 'https://1510.dump.academy/keksobooking';
 
-  var backendSetup = function (successHandler, errorHandler) {
+  var setupBackend = function (successHandler, errorHandler) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.timeout = 10000;
 
-    xhr.addEventListener('load', function () {
+    var xhrLoadHandler = function () {
       var errorMessage;
 
       switch (xhr.status) {
@@ -32,61 +32,69 @@
       if (errorMessage) {
         errorHandler(errorMessage);
       }
-    });
+    };
 
-    xhr.addEventListener('error', function () {
+    var xhrErrorHandler = function () {
       errorHandler('Произошла ошибка соединения');
-    });
+    };
 
-    xhr.addEventListener('timeout', function () {
+    var xhrTimeoutHandler = function () {
       errorHandler('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
-    });
+    };
+
+    xhr.addEventListener('load', xhrLoadHandler);
+    xhr.addEventListener('error', xhrErrorHandler);
+    xhr.addEventListener('timeout', xhrTimeoutHandler);
 
     return xhr;
   };
 
-  window.backend = {
-    load: function (loadHandler, errorHandler) {
-      var xhr = backendSetup(loadHandler, errorHandler);
+  var load = function (loadHandler, errorHandler) {
+    var xhr = setupBackend(loadHandler, errorHandler);
 
-      xhr.open('GET', url + '/data');
-      xhr.send();
-    },
+    xhr.open('GET', URL + '/data');
+    xhr.send();
+  };
 
-    save: function (data, loadHandler, errorHandler) {
-      var xhr = backendSetup(loadHandler, errorHandler);
+  var save = function (data, loadHandler, errorHandler) {
+    var xhr = setupBackend(loadHandler, errorHandler);
 
-      xhr.open('POST', url);
-      xhr.send(data);
-    },
+    xhr.open('POST', URL);
+    xhr.send(data);
+  };
 
-    displayError: function (errorMessage) {
-      var closeButtonClickHandler = function () {
+  var displayError = function (errorMessage) {
+    var closeButtonClickHandler = function () {
+      document.body.removeChild(errorDiv);
+
+      closeButton.removeEventListener('click', closeButtonClickHandler);
+    };
+
+    var closeButtonKeydownHandler = function (evt) {
+      if (evt.keyCode === window.utils.ENTER_KEYCODE) {
         document.body.removeChild(errorDiv);
 
-        closeButton.removeEventListener('click', closeButtonClickHandler);
-      };
+        closeButton.removeEventListener('keydown', closeButtonClickHandler);
+      }
+    };
 
-      var closeButtonKeydownHandler = function (evt) {
-        if (evt.keyCode === window.utils.ENTER_KEYCODE) {
-          document.body.removeChild(errorDiv);
+    var errorDiv = document.createElement('div');
+    errorDiv.classList.add('error-message');
+    errorDiv.textContent = errorMessage;
 
-          closeButton.removeEventListener('keydown', closeButtonClickHandler);
-        }
-      };
+    var closeButton = document.createElement('button');
+    closeButton.classList.add('error-message__button');
 
-      var errorDiv = document.createElement('div');
-      errorDiv.classList.add('error-message');
-      errorDiv.textContent = errorMessage;
+    closeButton.addEventListener('click', closeButtonClickHandler);
+    closeButton.addEventListener('keydown', closeButtonKeydownHandler);
 
-      var closeButton = document.createElement('button');
-      closeButton.classList.add('error-message__button');
+    errorDiv.appendChild(closeButton);
+    document.body.appendChild(errorDiv);
+  };
 
-      closeButton.addEventListener('click', closeButtonClickHandler);
-      closeButton.addEventListener('keydown', closeButtonKeydownHandler, closeButtonClickHandler);
-
-      errorDiv.appendChild(closeButton);
-      document.body.appendChild(errorDiv);
-    }
+  window.backend = {
+    load: load,
+    save: save,
+    displayError: displayError
   };
 })();

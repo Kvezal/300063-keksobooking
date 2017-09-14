@@ -1,10 +1,15 @@
 'use strict';
 
 (function () {
-  var typeHouse = {
+  var TYPE_HOUSE = {
     'flat': 'Квартира',
     'house': 'Дом',
     'bungalo': 'Бунгало'
+  };
+
+  var ADVERTS_PHOTOS_PARAMETERS = {
+    width: 52,
+    height: 42
   };
 
   var getFeaturesFragment = function (features) {
@@ -25,8 +30,8 @@
 
     photos.forEach(function (item) {
       var img = document.createElement('img');
-      img.width = 52;
-      img.height = 42;
+      img.width = ADVERTS_PHOTOS_PARAMETERS.width;
+      img.height = ADVERTS_PHOTOS_PARAMETERS.height;
       img.src = item;
 
       photosFragment.appendChild(img);
@@ -59,7 +64,9 @@
     window.utils.isEscEvent(evt, closeDialog);
   };
 
-  var dialogCloseClickHandler = function () {
+  var dialogCloseClickHandler = function (evt) {
+    evt.preventDefault();
+
     closeDialog();
   };
 
@@ -70,38 +77,48 @@
   dialogClose.addEventListener('click', dialogCloseClickHandler);
   document.addEventListener('keydown', popupEscPressHandler);
 
+  var createNewDialogPanel = function (template, advert) {
+    var information = advert.offer;
+
+    var avatar = dialogTitle.querySelector('img');
+    avatar.src = advert.author.avatar;
+
+    template.querySelector('.lodge__title').textContent = information.title;
+    template.querySelector('.lodge__address').textContent = information.address;
+    template.querySelector('.lodge__price').textContent = information.price +
+      '₽/ночь';
+
+    template.querySelector('.lodge__type').textContent =
+      TYPE_HOUSE[information.type];
+
+    template.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' +
+      information.guests + ' гостей в ' + information.rooms + ' комнатах';
+
+    template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' +
+      information.checkin + ', выезд до ' + information.checkout;
+
+    template.querySelector('.lodge__description').textContent =
+      information.description;
+
+    var featuresFragment = getFeaturesFragment(information.features);
+    var lodgeFeatures = template.querySelector('.lodge__features');
+
+    clearList(lodgeFeatures);
+
+    lodgeFeatures.appendChild(featuresFragment);
+
+    var photosFragment = getPhotosFragment(information.photos);
+    var lodgePhotos = template.querySelector('.lodge__photos');
+
+    clearList(lodgePhotos);
+
+    lodgePhotos.appendChild(photosFragment);
+
+    return template;
+  };
+
   window.card = {
-    createNewDialogPanel: function (template, advert) {
-      var information = advert.offer;
-
-      var avatar = dialogTitle.querySelector('img');
-      avatar.src = advert.author.avatar;
-
-      template.querySelector('.lodge__title').textContent = information.title;
-      template.querySelector('.lodge__address').textContent = information.address;
-      template.querySelector('.lodge__price').textContent = information.price + '₽/ночь';
-      template.querySelector('.lodge__type').textContent = typeHouse[information.type];
-      template.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + information.guests + ' гостей в ' + information.rooms + ' комнатах';
-      template.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + information.checkin + ', выезд до ' + information.checkout;
-      template.querySelector('.lodge__description').textContent = information.description;
-
-      var featuresFragment = getFeaturesFragment(information.features);
-      var lodgeFeatures = template.querySelector('.lodge__features');
-
-      clearList(lodgeFeatures);
-
-      lodgeFeatures.appendChild(featuresFragment);
-
-      var photosFragment = getPhotosFragment(information.photos);
-      var lodgePhotos = template.querySelector('.lodge__photos');
-
-      clearList(lodgePhotos);
-
-      lodgePhotos.appendChild(photosFragment);
-
-      return template;
-    },
-
+    createNewDialogPanel: createNewDialogPanel,
     closeDialog: closeDialog,
     openDialog: openDialog
   };
