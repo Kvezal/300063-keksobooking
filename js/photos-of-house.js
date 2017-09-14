@@ -17,10 +17,12 @@
     return true;
   };
 
-  var addPhotos = function (reader) {
-    window.photosOfHouse.push(fileChooser.files[0]);
+  var photosOfHouse = [];
 
-    window.photosOfHouse.forEach(function (item, index) {
+  var addPhotoHouse = function (reader) {
+    photosOfHouse.push(fileChooser.files[0]);
+
+    photosOfHouse.forEach(function (item, index) {
       fileChooser.files[index] = item;
     });
 
@@ -35,27 +37,27 @@
 
         formPhotos[i].appendChild(img);
 
-        break;
+        return;
       }
     }
   };
 
-  window.unloadPhoto(fileChooser, addPhotos);
+  window.uploadPhoto(fileChooser, addPhotoHouse);
 
   var draggedItem;
 
-  photoContainer.addEventListener('dragstart', function (evt) {
+  var photoContainerDragStartHandler = function (evt) {
     if (evt.target.tagName === 'IMG') {
       draggedItem = evt.target;
       evt.dataTransfer.setData('text/plain', draggedItem);
     }
-  });
+  };
 
-  photoContainer.addEventListener('dragover', function (evt) {
+  var photoContainerDragOverHandler = function (evt) {
     evt.preventDefault();
-  });
+  };
 
-  photoContainer.addEventListener('drop', function (evt) {
+  var photoContainerDropHandler = function (evt) {
     var target = evt.target;
 
     if (target.tagName === 'IMG') {
@@ -75,9 +77,9 @@
     }
 
     evt.preventDefault();
-  });
+  };
 
-  photoContainer.addEventListener('dragenter', function (evt) {
+  var photoContainerDragEnterHandler = function (evt) {
     var target = evt.target;
 
     if (target.tagName === 'IMG') {
@@ -91,9 +93,9 @@
     }
 
     evt.preventDefault();
-  });
+  };
 
-  photoContainer.addEventListener('dragleave', function (evt) {
+  var photoContainerDragLeaveHandler = function (evt) {
     var target = evt.target;
 
     if (target.tagName === 'IMG') {
@@ -103,7 +105,13 @@
     target.style.backgroundColor = '';
     target.style.outline = '';
     evt.preventDefault();
-  });
+  };
 
-  window.photosOfHouse = [];
+  photoContainer.addEventListener('dragstart', photoContainerDragStartHandler);
+  photoContainer.addEventListener('dragover', photoContainerDragOverHandler);
+  photoContainer.addEventListener('drop', photoContainerDropHandler);
+  photoContainer.addEventListener('dragenter', photoContainerDragEnterHandler);
+  photoContainer.addEventListener('dragleave', photoContainerDragLeaveHandler);
+
+  window.photosOfHouse = photosOfHouse;
 })();

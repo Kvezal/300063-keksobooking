@@ -6,23 +6,35 @@
     'bungalo',
     'palace'
   ];
+
   var ADVERT_CHECKIN_OR_CHECKOUT = [
     '12:00',
     '13:00',
     '14:00'
   ];
+
   var ADVERT_MIN_PRICE = [
     '1000',
     '5000',
     '0',
     '10000'
   ];
+
   var ROOMS_NUMBERS = [
     '100',
     '1',
     '2',
     '3'
   ];
+
+  // Массив CAPACITY_LIST содержащит варианты для выбора количества гостей в
+  // соответствии с количеством комнат(ROOMS_NUMBERS). С помощью массива
+  // ROOMS_NUMBERS высчитывается индекс для выбора массива из CAPACITY_LIST.
+  // И уже используя этот массив производится синхронизация полей в функции
+  // syncValueWithOptions, которая связывает между собой опцию количества
+  // комнат с доступным для него списком опций количества гостей.
+  // Массивы CAPACITY_LIST содержат value опций из поля с id="capacity".
+
   var CAPACITY_LIST = [
     [0],
     [1],
@@ -31,7 +43,7 @@
   ];
 
   var USER_AVATAR_DEFAULT = 'img/muffin.png';
-  var MAIN_PIN_IMAGE = 'img/main-pin-image.png';
+  var MAIN_PIN_IMAGE_DEFAULT = 'img/main-pin-image.png';
 
   var syncValues = function (element, value) {
     element.value = value;
@@ -76,11 +88,11 @@
 
     window.photosOfHouse = [];
 
-    var userAvatar = document.querySelector('img[alt="User Avatar"]');
+    var userAvatar = document.querySelector('.notice__preview img');
     userAvatar.src = USER_AVATAR_DEFAULT;
 
-    var mainPin = document.querySelector('img[alt="Main Pin"]');
-    mainPin.src = MAIN_PIN_IMAGE;
+    var mainPin = document.querySelector('.pin__main img');
+    mainPin.src = MAIN_PIN_IMAGE_DEFAULT;
   };
 
   var resetForm = function () {
@@ -105,19 +117,23 @@
   };
 
   var timeinChangeHandler = function (evt) {
-    window.synchronizeFields(evt.target, timeout, ADVERT_CHECKIN_OR_CHECKOUT, ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
+    window.synchronizeFields(evt.target, timeout, ADVERT_CHECKIN_OR_CHECKOUT,
+        ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
   };
 
   var timeoutChangeHandler = function (evt) {
-    window.synchronizeFields(evt.target, timein, ADVERT_CHECKIN_OR_CHECKOUT, ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
+    window.synchronizeFields(evt.target, timein, ADVERT_CHECKIN_OR_CHECKOUT,
+        ADVERT_CHECKIN_OR_CHECKOUT, syncValues);
   };
 
   var typeChangeHandler = function (evt) {
-    window.synchronizeFields(evt.target, price, ADVERT_TYPE, ADVERT_MIN_PRICE, syncValueWithMin);
+    window.synchronizeFields(evt.target, price, ADVERT_TYPE, ADVERT_MIN_PRICE,
+        syncValueWithMin);
   };
 
   var roomNumberChangeHandler = function (evt) {
-    window.synchronizeFields(evt.target, capacity, ROOMS_NUMBERS, CAPACITY_LIST, syncValueWithOptions);
+    window.synchronizeFields(evt.target, capacity, ROOMS_NUMBERS, CAPACITY_LIST,
+        syncValueWithOptions);
   };
 
   var noticeFormSubmitHandler = function (evt) {
