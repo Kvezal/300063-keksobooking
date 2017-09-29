@@ -1,4 +1,5 @@
 build/
+
 node_modules/
 .DS_Store
 Thumbs.db
@@ -10,3 +11,5 @@ Thumbs.db
 *.pdf
 yarn.lock
 npm-debug.log*
+
+.publish

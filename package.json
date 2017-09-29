@@ -13,13 +13,24 @@
   },
   "homepage": "https://github.com/htmlacademy-javascript/300063-keksobooking",
   "devDependencies": {
+    "browser-sync": "^2.18.12",
+    "del": "^3.0.0",
     "eslint": "4.2.0",
-    "eslint-config-htmlacademy": "0.3.x"
+    "eslint-config-htmlacademy": "0.3.x",
+    "gulp": "^3.9.1",
+    "gulp-gh-pages": "^0.5.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^3.0.0",
+    "pump": "^1.0.2",
+    "run-sequence": "^1.2.2"
   },
   "license": "MIT",
   "dependencies": {},
   "scripts": {
-    "test": "eslint js/"
+    "test": "eslint js/",
+    "build": "gulp build",
+    "start": "npm run build && gulp serve",
+    "pub": "npm run build && gulp deploy"
   },
   "engines": {
     "node": "^6.10"
